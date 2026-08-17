@@ -1,405 +1,455 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>弹窗生成器</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #f9f3e8;
-            overflow: hidden;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .win-box {
-            position: absolute;
-            background: #ffffff;
-            border-radius: 0.6vw;
-            box-shadow: 0 0.6vh 2vh rgba(0, 0, 0, 0.18);
-            display: flex;
-            flex-direction: column;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            opacity: 0;
-            animation: fadeInUp 0.2s ease-out forwards;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(1vh) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes fadeOutDown {
-            from { opacity: 1; transform: scale(1) translateY(0); }
-            to { opacity: 0; transform: scale(0.95) translateY(1.5vh); }
-        }
-        .win-header {
-            border-top-left-radius: 0.6vw;
-            border-top-right-radius: 0.6vw;
-            border-bottom: 1px solid #e5e5e5;
-            background: #f3f3f3;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 1vw;
-            cursor: grab;
-            touch-action: none;
-        }
-        .win-header:active { cursor: grabbing; }
-        .win-title {
-            color: #333;
-            margin-left: 0.4vw;
-            font-weight: 600;
-        }
-        .win-close {
-            border-radius: 0.4vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            color: #666;
-            transition: background 0.15s, color 0.15s;
-        }
-        .win-close:hover {
-            background: #e81123;
-            color: #fff;
-        }
-        .win-body {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2vh 1vw;
-            border-bottom-left-radius: 0.6vw;
-            border-bottom-right-radius: 0.6vw;
-            font-weight: 500;
-            color: #1a1a1a;
-            text-align: center;
-            line-height: 1.4;
-            word-break: break-all;
-        }
 
-        #menu-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 9999;
-            width: 30px;
-            height: 24px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background: transparent;
-            border: none;
-            padding: 0;
-        }
-        #menu-toggle span {
-            display: block;
-            height: 3px;
-            width: 100%;
-            background: #333;
-            border-radius: 3px;
-            transition: 0.3s;
-        }
-        #menu-dropdown {
-            position: fixed;
-            top: 70px;
-            left: 20px;
-            z-index: 9998;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            padding: 10px 0;
-            min-width: 150px;
-            display: none;
-        }
-        #menu-dropdown ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        #menu-dropdown ul li {
-            padding: 8px 20px;
-        }
-        #menu-dropdown ul li a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-        }
-        #menu-dropdown ul li:hover {
-            background: #f0f0f0;
-        }
-        #menu-dropdown.active {
-            display: block;
-        }
-        @media (max-width: 600px) {
-            #menu-toggle { top: 10px; left: 10px; width: 24px; height: 20px; }
-            #menu-dropdown { top: 50px; left: 10px; min-width: 120px; }
-        }
-    </style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>弹窗生成器</title>
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #f9f3e8;
+      overflow: hidden;
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .win-box {
+      position: absolute;
+      background: #ffffff;
+      border-radius: 0.6vw;
+      box-shadow: 0 0.6vh 2vh rgba(0, 0, 0, 0.18);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      opacity: 0;
+      animation: fadeInUp 0.2s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(1vh) scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fadeOutDown {
+      from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+
+      to {
+        opacity: 0;
+        transform: scale(0.95) translateY(1.5vh);
+      }
+    }
+
+    .win-header {
+      border-top-left-radius: 0.6vw;
+      border-top-right-radius: 0.6vw;
+      border-bottom: 1px solid #e5e5e5;
+      background: #f3f3f3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1vw;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .win-header:active {
+      cursor: grabbing;
+    }
+
+    .win-title {
+      color: #333;
+      margin-left: 0.4vw;
+      font-weight: 600;
+    }
+
+    .win-close {
+      border-radius: 0.4vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: #666;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .win-close:hover {
+      background: #e81123;
+      color: #fff;
+    }
+
+    .win-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2vh 1vw;
+      border-bottom-left-radius: 0.6vw;
+      border-bottom-right-radius: 0.6vw;
+      font-weight: 500;
+      color: #1a1a1a;
+      text-align: center;
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    #menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 9999;
+      width: 30px;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+
+    #menu-toggle span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background: #333;
+      border-radius: 3px;
+      transition: 0.3s;
+    }
+
+    #menu-dropdown {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      position: fixed;
+      top: 70px;
+      left: 20px;
+      z-index: 9998;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 10px 0;
+      min-width: 150px;
+      display: none;
+    }
+
+    #menu-dropdown ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #menu-dropdown ul li {
+      padding: 8px 20px;
+    }
+
+    #menu-dropdown ul li a {
+      display: block;
+      padding: 8px 20px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    #menu-dropdown ul li:hover {
+      background: #f0f0f0;
+    }
+
+    #menu-dropdown.active {
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      #menu-toggle {
+        top: 10px;
+        left: 10px;
+        width: 24px;
+        height: 20px;
+      }
+
+      #menu-dropdown {
+        top: 50px;
+        left: 10px;
+        min-width: 120px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-    <button id="menu-toggle" aria-label="菜单">
-        <span></span><span></span><span></span>
-    </button>
-    <nav id="menu-dropdown">
-        <ul>
-            <li><a href="index.html">生日信</a></li>
-            <li><a href="popup.html">弹窗生成器</a></li>
-        </ul>
-    </nav>
+  <button id="menu-toggle" aria-label="菜单">
+    <span></span><span></span><span></span>
+  </button>
+  <nav id="menu-dropdown">
+    <ul>
+      <li><a href="index.html">生日信</a></li>
+      <li><a href="popup.html">弹窗生成器</a></li>
+    </ul>
+  </nav>
 
-    <script>
-        document.getElementById('menu-toggle').addEventListener('click', function() {
-            var dropdown = document.getElementById('menu-dropdown');
-            dropdown.classList.toggle('active');
-        });
-        document.addEventListener('click', function(e) {
-            var toggle = document.getElementById('menu-toggle');
-            var dropdown = document.getElementById('menu-dropdown');
-            if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.remove('active');
-            }
-        });
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', function () {
+      var dropdown = document.getElementById('menu-dropdown');
+      dropdown.classList.toggle('active');
+    });
+    document.addEventListener('click', function (e) {
+      var toggle = document.getElementById('menu-toggle');
+      var dropdown = document.getElementById('menu-dropdown');
+      if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('active');
+      }
+    });
 
-        const body = document.body;
-        let count = 0;
-        const total = 100;
+    const body = document.body;
+    let count = 0;
+    const total = 100;
 
-        const textPool = [
-            "默认文本1", "默认文本2", "默认文本3", "默认文本4", "默认文本5",
-            "默认文本6", "默认文本7", "默认文本8", "默认文本9", "默认文本10"
-        ];
-        let currentTextPool = [];
+    const textPool = [
+      "默认文本1", "默认文本2", "默认文本3", "默认文本4", "默认文本5",
+      "默认文本6", "默认文本7", "默认文本8", "默认文本9", "默认文本10"
+    ];
+    let currentTextPool = [];
 
-        function getRandomText() {
-            if (currentTextPool.length === 0) {
-                currentTextPool = [...textPool];
-                for (let i = currentTextPool.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [currentTextPool[i], currentTextPool[j]] = [currentTextPool[j], currentTextPool[i]];
-                }
-            }
-            return currentTextPool.pop();
+    function getRandomText() {
+      if (currentTextPool.length === 0) {
+        currentTextPool = [...textPool];
+        for (let i = currentTextPool.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [currentTextPool[i], currentTextPool[j]] = [currentTextPool[j], currentTextPool[i]];
         }
+      }
+      return currentTextPool.pop();
+    }
 
-        let currentPositionPool = [];
+    let currentPositionPool = [];
 
-        function getRandomPosition() {
-            if (currentPositionPool.length === 0) {
-                const centerPool = [];
-                const edgePool = [];
-                for (let row = 0; row < 10; row++) {
-                    for (let col = 0; col < 10; col++) {
-                        const baseLeft = (col / 9) * 100;
-                        const baseTop  = (row / 9) * 100;
-                        let offsetX, offsetY;
-                        const isCenter = (row >= 2 && row <= 7) && (col >= 2 && col <= 7);
-                        if (isCenter) {
-                            offsetX = (Math.random() - 0.5) * 16;
-                            offsetY = (Math.random() - 0.5) * 16;
-                        } else {
-                            offsetX = (Math.random() - 0.5) * 6;
-                            offsetY = (Math.random() - 0.5) * 6;
-                        }
-                        const finalTop = Math.max(0, baseTop + offsetY);
-                        const pos = { left: (baseLeft + offsetX) + '%', top: finalTop + '%' };
-                        if (isCenter) {
-                            centerPool.push(pos);
-                        } else {
-                            edgePool.push(pos);
-                        }
-                    }
-                }
-                for (let i = centerPool.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [centerPool[i], centerPool[j]] = [centerPool[j], centerPool[i]];
-                }
-                for (let i = edgePool.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [edgePool[i], edgePool[j]] = [edgePool[j], edgePool[i]];
-                }
-                currentPositionPool = [...edgePool, ...centerPool];
-            }
-            return currentPositionPool.pop();
-        }
-
-        function renderNext() {
-            if (count >= total) return;
-
-            const box = document.createElement('div');
-            box.className = 'win-box';
-            
-            const isPortrait = window.innerWidth < window.innerHeight;
-            let widthPx, heightPx;
-            let fontSize, headerHeight, closeBtnSize, titleSize;
-
-            if (isPortrait) {
-                widthPx = 28; heightPx = 20;
-                fontSize = '3vw';
-                headerHeight = '4.2vw';
-                titleSize = '2.2vw';
-                closeBtnSize = '3vw';
+    function getRandomPosition() {
+      if (currentPositionPool.length === 0) {
+        const centerPool = [];
+        const edgePool = [];
+        for (let row = 0; row < 10; row++) {
+          for (let col = 0; col < 10; col++) {
+            const baseLeft = (col / 9) * 100;
+            const baseTop = (row / 9) * 100;
+            let offsetX, offsetY;
+            const isCenter = (row >= 2 && row <= 7) && (col >= 2 && col <= 7);
+            if (isCenter) {
+              offsetX = (Math.random() - 0.5) * 16;
+              offsetY = (Math.random() - 0.5) * 16;
             } else {
-                widthPx = 24; heightPx = 22;
-                fontSize = '2.8vh';
-                headerHeight = '4.5vh';
-                titleSize = '1.8vh';
-                closeBtnSize = '2.2vh';
+              offsetX = (Math.random() - 0.5) * 6;
+              offsetY = (Math.random() - 0.5) * 6;
             }
-
-            box.style.width = widthPx + 'vw';
-            box.style.height = heightPx + 'vh';
-
-            const pos = getRandomPosition();
-            box.style.left = pos.left;
-            box.style.top  = pos.top;
-
-            const hue = Math.floor(Math.random() * 360);
-            const bgColor = `hsl(${hue}, 65%, 85%)`;
-
-            const header = document.createElement('div');
-            header.className = 'win-header';
-            header.style.height = headerHeight;
-
-            const title = document.createElement('span');
-            title.className = 'win-title';
-            title.style.fontSize = titleSize;
-            title.innerText = '温馨提示';
-
-            const closeBtn = document.createElement('span');
-            closeBtn.className = 'win-close';
-            closeBtn.style.width = closeBtnSize;
-            closeBtn.style.height = closeBtnSize;
-            closeBtn.style.fontSize = closeBtnSize;
-            closeBtn.innerText = '✕';
-            
-            header.appendChild(title);
-            header.appendChild(closeBtn);
-
-            const content = document.createElement('div');
-            content.className = 'win-body';
-            content.style.fontSize = fontSize;
-            content.style.backgroundColor = bgColor;
-            content.innerText = getRandomText();
-
-            box.appendChild(header);
-            box.appendChild(content);
-            body.appendChild(box);
-
-            const bringToFront = (el) => {
-                el.style.animation = 'none';
-                el.style.opacity = '1';
-                el.parentNode.appendChild(el);
-            };
-            const sendToBack = (el) => {
-                el.style.animation = 'none';
-                el.style.opacity = '1';
-                el.parentNode.prepend(el);
-            };
-
-            box.addEventListener('mousedown', () => bringToFront(box));
-            box.addEventListener('touchstart', () => bringToFront(box), { passive: true });
-
-            let isDragging = false;
-            let startX, startY, initialX, initialY;
-
-            const onMouseMove = (e) => {
-                if (!isDragging) return;
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
-                box.style.left = (initialX + dx) + 'px';
-                box.style.top = (initialY + dy) + 'px';
-            };
-            const onMouseUp = () => {
-                isDragging = false;
-                document.removeEventListener('mousemove', onMouseMove);
-                document.removeEventListener('mouseup', onMouseUp);
-            };
-
-            const onTouchMove = (e) => {
-                if (!isDragging) return;
-                e.preventDefault();
-                const touch = e.touches[0];
-                const dx = touch.clientX - startX;
-                const dy = touch.clientY - startY;
-                box.style.left = (initialX + dx) + 'px';
-                box.style.top = (initialY + dy) + 'px';
-            };
-            const onTouchEnd = () => {
-                isDragging = false;
-                document.removeEventListener('touchmove', onTouchMove);
-                document.removeEventListener('touchend', onTouchEnd);
-                document.removeEventListener('touchcancel', onTouchCancel);
-            };
-            const onTouchCancel = () => {
-                isDragging = false;
-                document.removeEventListener('touchmove', onTouchMove);
-                document.removeEventListener('touchend', onTouchEnd);
-                document.removeEventListener('touchcancel', onTouchCancel);
-            };
-
-            header.addEventListener('mousedown', (e) => {
-                bringToFront(box);
-                isDragging = true;
-                const rect = box.getBoundingClientRect();
-                initialX = rect.left;
-                initialY = rect.top;
-                startX = e.clientX;
-                startY = e.clientY;
-                document.addEventListener('mousemove', onMouseMove);
-                document.addEventListener('mouseup', onMouseUp);
-            });
-
-            header.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                bringToFront(box);
-                isDragging = true;
-                const rect = box.getBoundingClientRect();
-                initialX = rect.left;
-                initialY = rect.top;
-                const touch = e.touches[0];
-                startX = touch.clientX;
-                startY = touch.clientY;
-                
-                document.addEventListener('touchmove', onTouchMove, { passive: false });
-                document.addEventListener('touchend', onTouchEnd);
-                document.addEventListener('touchcancel', onTouchCancel);
-            }, { passive: false });
-
-            closeBtn.addEventListener('mousedown', (e) => e.stopPropagation());
-            closeBtn.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
-            
-            closeBtn.addEventListener('click', () => {
-                box.style.animation = 'none';
-                box.style.opacity = '1';
-                void box.offsetHeight;
-                box.style.animation = 'fadeOutDown 0.25s ease-in forwards';
-                
-                setTimeout(() => {
-                    sendToBack(box);
-                    box.style.animation = 'none';
-                    box.style.opacity = '1';
-                    const newPos = getRandomPosition();
-                    box.style.left = newPos.left;
-                    box.style.top  = newPos.top;
-                }, 260);
-            });
-
-            count++;
-            const progress = count / total;
-            const minDelay = 5;
-            const maxDelay = 1000;
-            const delay = minDelay + (maxDelay - minDelay) * Math.pow(0.01, progress);
-            
-            setTimeout(renderNext, delay);
+            const finalTop = Math.max(0, baseTop + offsetY);
+            const pos = { left: (baseLeft + offsetX) + '%', top: finalTop + '%' };
+            if (isCenter) {
+              centerPool.push(pos);
+            } else {
+              edgePool.push(pos);
+            }
+          }
         }
+        for (let i = centerPool.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [centerPool[i], centerPool[j]] = [centerPool[j], centerPool[i]];
+        }
+        for (let i = edgePool.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [edgePool[i], edgePool[j]] = [edgePool[j], edgePool[i]];
+        }
+        currentPositionPool = [...edgePool, ...centerPool];
+      }
+      return currentPositionPool.pop();
+    }
 
-        renderNext();
-    </script>
+    function renderNext() {
+      if (count >= total) return;
+
+      const box = document.createElement('div');
+      box.className = 'win-box';
+
+      const isPortrait = window.innerWidth < window.innerHeight;
+      let widthPx, heightPx;
+      let fontSize, headerHeight, closeBtnSize, titleSize;
+
+      if (isPortrait) {
+        widthPx = 28; heightPx = 20;
+        fontSize = '3vw';
+        headerHeight = '4.2vw';
+        titleSize = '2.2vw';
+        closeBtnSize = '3vw';
+      } else {
+        widthPx = 24; heightPx = 22;
+        fontSize = '2.8vh';
+        headerHeight = '4.5vh';
+        titleSize = '1.8vh';
+        closeBtnSize = '2.2vh';
+      }
+
+      box.style.width = widthPx + 'vw';
+      box.style.height = heightPx + 'vh';
+
+      const pos = getRandomPosition();
+      box.style.left = pos.left;
+      box.style.top = pos.top;
+
+      const hue = Math.floor(Math.random() * 360);
+      const bgColor = `hsl(${hue}, 65%, 85%)`;
+
+      const header = document.createElement('div');
+      header.className = 'win-header';
+      header.style.height = headerHeight;
+
+      const title = document.createElement('span');
+      title.className = 'win-title';
+      title.style.fontSize = titleSize;
+      title.innerText = '温馨提示';
+
+      const closeBtn = document.createElement('span');
+      closeBtn.className = 'win-close';
+      closeBtn.style.width = closeBtnSize;
+      closeBtn.style.height = closeBtnSize;
+      closeBtn.style.fontSize = closeBtnSize;
+      closeBtn.innerText = '✕';
+
+      header.appendChild(title);
+      header.appendChild(closeBtn);
+
+      const content = document.createElement('div');
+      content.className = 'win-body';
+      content.style.fontSize = fontSize;
+      content.style.backgroundColor = bgColor;
+      content.innerText = getRandomText();
+
+      box.appendChild(header);
+      box.appendChild(content);
+      body.appendChild(box);
+
+      const bringToFront = (el) => {
+        el.style.animation = 'none';
+        el.style.opacity = '1';
+        el.parentNode.appendChild(el);
+      };
+      const sendToBack = (el) => {
+        el.style.animation = 'none';
+        el.style.opacity = '1';
+        el.parentNode.prepend(el);
+      };
+
+      box.addEventListener('mousedown', () => bringToFront(box));
+      box.addEventListener('touchstart', () => bringToFront(box), { passive: true });
+
+      let isDragging = false;
+      let startX, startY, initialX, initialY;
+
+      const onMouseMove = (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        box.style.left = (initialX + dx) + 'px';
+        box.style.top = (initialY + dy) + 'px';
+      };
+      const onMouseUp = () => {
+        isDragging = false;
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      };
+
+      const onTouchMove = (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        box.style.left = (initialX + dx) + 'px';
+        box.style.top = (initialY + dy) + 'px';
+      };
+      const onTouchEnd = () => {
+        isDragging = false;
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', onTouchEnd);
+        document.removeEventListener('touchcancel', onTouchCancel);
+      };
+      const onTouchCancel = () => {
+        isDragging = false;
+        document.removeEventListener('touchmove', onTouchMove);
+        document.removeEventListener('touchend', onTouchEnd);
+        document.removeEventListener('touchcancel', onTouchCancel);
+      };
+
+      header.addEventListener('mousedown', (e) => {
+        bringToFront(box);
+        isDragging = true;
+        const rect = box.getBoundingClientRect();
+        initialX = rect.left;
+        initialY = rect.top;
+        startX = e.clientX;
+        startY = e.clientY;
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+      });
+
+      header.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        bringToFront(box);
+        isDragging = true;
+        const rect = box.getBoundingClientRect();
+        initialX = rect.left;
+        initialY = rect.top;
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd);
+        document.addEventListener('touchcancel', onTouchCancel);
+      }, { passive: false });
+
+      closeBtn.addEventListener('mousedown', (e) => e.stopPropagation());
+      closeBtn.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+
+      closeBtn.addEventListener('click', () => {
+        box.style.animation = 'none';
+        box.style.opacity = '1';
+        void box.offsetHeight;
+        box.style.animation = 'fadeOutDown 0.25s ease-in forwards';
+
+        setTimeout(() => {
+          sendToBack(box);
+          box.style.animation = 'none';
+          box.style.opacity = '1';
+          const newPos = getRandomPosition();
+          box.style.left = newPos.left;
+          box.style.top = newPos.top;
+        }, 260);
+      });
+
+      count++;
+      const progress = count / total;
+      const minDelay = 5;
+      const maxDelay = 1000;
+      const delay = minDelay + (maxDelay - minDelay) * Math.pow(0.01, progress);
+
+      setTimeout(renderNext, delay);
+    }
+
+    renderNext();
+  </script>
 </body>
+
 </html>
