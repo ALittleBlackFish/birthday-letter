@@ -44,7 +44,6 @@
             display: block;
             background: #e8dfd4;
         }
-        /*纯文本填充，无实义 */
         .placeholder-text {
             color: #4a3f35;
         }
@@ -59,63 +58,136 @@
             border-top: 1px solid #e6ddd2;
             margin: 24px 0 16px 0;
         }
+
+        #menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            width: 30px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+        #menu-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background: #333;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+        #menu-dropdown {
+            position: fixed;
+            top: 70px;
+            left: 20px;
+            z-index: 9998;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 10px 0;
+            min-width: 150px;
+            display: none;
+        }
+        #menu-dropdown ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        #menu-dropdown ul li {
+            padding: 8px 20px;
+        }
+        #menu-dropdown ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        #menu-dropdown ul li:hover {
+            background: #f0f0f0;
+        }
+        #menu-dropdown.active {
+            display: block;
+        }
+        @media (max-width: 600px) {
+            #menu-toggle { top: 10px; left: 10px; width: 24px; height: 20px; }
+            #menu-dropdown { top: 50px; left: 10px; min-width: 120px; }
+        }
     </style>
 </head>
 <body>
+
+    <button id="menu-toggle" aria-label="菜单">
+        <span></span><span></span><span></span>
+    </button>
+    <nav id="menu-dropdown">
+        <ul>
+            <li><a href="index.html">📬 生日信</a></li>
+            <li><a href="popup.html">💬 弹窗生成器</a></li>
+        </ul>
+    </nav>
+
     <div class="letter">
         <h1>致 [朋友的名字]</h1>
 
-        <!-- 祝福1 -->
         <p class="placeholder-text">
             文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
         </p>
 
-        <!-- 祝福2 -->
         <p class="placeholder-text">
             文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
         </p>
 
-        <!-- 祝福3 -->
         <p class="placeholder-text">
             文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
         </p>
 
-        <!-- 祝福4 -->
         <p class="placeholder-text">
             文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
         </p>
 
-        <!-- 祝福5 -->
         <p class="placeholder-text">
             文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
         </p>
 
-
-        <!-- 图片占位(随机图)-->
         <img src="https://picsum.photos/600/320?random=1" alt="合照 · 占位图片" class="photo">
 
-        <!-- 祝福6 -->
         <p class="placeholder-text">
             文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
         </p>
 
-        <!-- 祝福7 -->
         <p class="placeholder-text">
             文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
         </p>
 
         <hr>
 
-        <!-- 祝福8 -->
         <p class="placeholder-text">
             文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
         </p>
 
-        <!-- 签名区 -->
         <div class="signature">
             —— 你的朋友<br>
             <span style="font-size: 0.9rem; color: #9a8a7a;">(请输入文本)</span>
         </div>
     </div>
+
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            var dropdown = document.getElementById('menu-dropdown');
+            dropdown.classList.toggle('active');
+        });
+        document.addEventListener('click', function(e) {
+            var toggle = document.getElementById('menu-toggle');
+            var dropdown = document.getElementById('menu-dropdown');
+            if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>
