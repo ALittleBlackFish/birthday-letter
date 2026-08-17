@@ -443,7 +443,7 @@
       const progress = count / total;
       const minDelay = 5;
       const maxDelay = 1000;
-      const delay = minDelay + (maxDelay - minDelay) * Math.pow(0.01, progress);
+      const delay = minDelay + (maxDelay - minDelay) * Math.pow(0.01, progress) / 100;
 
       setTimeout(renderNext, delay);
     }
