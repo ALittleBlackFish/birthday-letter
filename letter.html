@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>给朋友的一封信</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f9f3e8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: "STKaiti", "KaiTi", "楷体", serif;
+            line-height: 1.8;
+            padding: 20px;
+        }
+
+        .letter {
+            max-width: 600px;
+            background: #fffcf7;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border: 1px solid #ede6db;
+        }
+
+        h1 {
+            font-weight: 400;
+            color: #4d3e2f;
+            border-bottom: 1px dashed #dcd0c2;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 30px;
+            font-style: italic;
+            color: #7a6a5a;
+        }
+
+        .photo {
+            width: 100%;
+            border-radius: 12px;
+            margin: 16px 0;
+            display: block;
+            background: #e8dfd4;
+        }
+
+        .placeholder-text {
+            color: #4a3f35;
+        }
+
+        p {
+            margin-bottom: 1.2em;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #e6ddd2;
+            margin: 24px 0 16px 0;
+        }
+
+        #menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+            width: 30px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+        #menu-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background: #333;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+        #menu-dropdown {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            position: fixed;
+            top: 70px;
+            left: 20px;
+            z-index: 9998;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 10px 0;
+            min-width: 150px;
+            display: none;
+        }
+        #menu-dropdown ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        #menu-dropdown ul li {
+            padding: 8px 20px;
+        }
+        #menu-dropdown ul li a {
+            display: block;
+            padding: 8px 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+        }
+        #menu-dropdown ul li:hover {
+            background: #f0f0f0;
+        }
+        #menu-dropdown.active {
+            display: block;
+        }
+
+        #sound-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: background 0.2s;
+        }
+        #sound-toggle:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+        #sound-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #333;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @media (max-width: 600px) {
+            #menu-toggle {
+                top: 10px;
+                left: 10px;
+                width: 24px;
+                height: 20px;
+            }
+            #menu-dropdown {
+                top: 50px;
+                left: 10px;
+                min-width: 120px;
+            }
+            #sound-toggle {
+                top: 10px;
+                right: 10px;
+                width: 32px;
+                height: 32px;
+            }
+            #sound-toggle svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        #video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 100000;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="video-container">
+        <video id="intro-video" src="assets/video/dance.mp4" preload="auto" playsinline disablePictureInPicture></video>
+    </div>
+
+    <button id="menu-toggle" aria-label="菜单">
+        <span></span><span></span><span></span>
+    </button>
+    <nav id="menu-dropdown">
+        <ul>
+            <li><a href="letter.html">生日信</a></li>
+            <li><a href="popup.html">弹窗生成器</a></li>
+        </ul>
+    </nav>
+
+    <div id="sound-toggle" role="button" aria-label="声音开关" tabindex="0">
+        <svg id="sound-icon" viewBox="0 0 24 24">
+            <path d="M3 9v6h4l5 5V4L7 9H3z"/>
+            <path d="M16 8a6 6 0 0 1 0 8"/>
+            <path d="M19 5a10 10 0 0 1 0 14"/>
+        </svg>
+    </div>
+
+    <audio id="bgm" src="assets/music/bgm.mp3" loop preload="auto"></audio>
+
+    <div class="letter">
+        <h1>致 [朋友的名字]</h1>
+
+        <p class="placeholder-text">
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
+        </p>
+
+        <p class="placeholder-text">
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
+        </p>
+
+        <p class="placeholder-text">
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
+        </p>
+
+        <p class="placeholder-text">
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
+        </p>
+
+        <p class="placeholder-text">
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
+        </p>
+
+        <img src="https://picsum.photos/600/320?random=1" alt="占位图片" class="photo">
+
+        <p class="placeholder-text">
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
+        </p>
+
+        <p class="placeholder-text">
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
+        </p>
+
+        <hr>
+
+        <p class="placeholder-text">
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本
+            文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本 文本。
+        </p>
+
+        <div class="signature">
+            —— 你的朋友<br>
+            <span style="font-size: 0.9rem; color: #9a8a7a;">(请输入文本)</span>
+        </div>
+    </div>
+
+    <script>
+        var menuToggle = document.getElementById('menu-toggle');
+        var dropdown = document.getElementById('menu-dropdown');
+        menuToggle.addEventListener('click', function () {
+            dropdown.classList.toggle('active');
+        });
+        document.addEventListener('click', function (e) {
+            if (!menuToggle.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        var clickCount = 0;
+        var clickTimer = null;
+        document.addEventListener('click', function (e) {
+            var target = e.target;
+            if (target.closest('.letter') || target.closest('#menu-toggle') || target.closest('#menu-dropdown') || target.closest('#sound-toggle') || target.closest('#video-container')) {
+                return;
+            }
+            clickCount++;
+            if (clickCount === 5) {
+                if (confirm('恭喜你发现隐藏彩蛋！点"确定"跳转~')) {
+                    window.open('https://www.bilibili.com/video/BV1GJ411x7h7/', '_blank');
+                }
+                clickCount = 0;
+                clearTimeout(clickTimer);
+            } else {
+                clearTimeout(clickTimer);
+                clickTimer = setTimeout(function () {
+                    clickCount = 0;
+                }, 3000);
+            }
+        });
+
+        var audio = document.getElementById('bgm');
+        var soundToggle = document.getElementById('sound-toggle');
+        var soundIcon = document.getElementById('sound-icon');
+        var isPlaying = false;
+        var videoPlaying = false;
+
+        function updateIcon(playing) {
+            if (playing) {
+                soundIcon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16 8a6 6 0 0 1 0 8"/><path d="M19 5a10 10 0 0 1 0 14"/>';
+            } else {
+                soundIcon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3z"/><line x1="0" y1="0" x2="22" y2="22" stroke="currentColor" stroke-width="2"/>';
+            }
+        }
+
+        audio.play().then(function () {
+            isPlaying = true;
+            updateIcon(true);
+        }).catch(function () {
+            isPlaying = false;
+            updateIcon(false);
+        });
+
+        soundToggle.addEventListener('click', function () {
+            if (videoPlaying) {
+                isPlaying = !isPlaying;
+                updateIcon(isPlaying);
+                return;
+            }
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                updateIcon(false);
+            } else {
+                audio.play().then(function () {
+                    isPlaying = true;
+                    updateIcon(true);
+                }).catch(function () {});
+            }
+        });
+
+        var videoContainer = document.getElementById('video-container');
+        var video = document.getElementById('intro-video');
+
+        function startVideo() {
+            video.play().then(function () {
+                if (isPlaying) {
+                    audio.pause();
+                    isPlaying = false;
+                    updateIcon(false);
+                }
+                videoPlaying = true;
+            }).catch(function () {
+                videoContainer.addEventListener('click', function playOnce() {
+                    video.play().then(function () {
+                        if (isPlaying) {
+                            audio.pause();
+                            isPlaying = false;
+                            updateIcon(false);
+                        }
+                        videoPlaying = true;
+                        videoContainer.removeEventListener('click', playOnce);
+                    }).catch(function () {});
+                });
+            });
+        }
+
+        video.addEventListener('ended', function () {
+            videoPlaying = false;
+            videoContainer.remove();
+            audio.play().catch(function () {});
+            isPlaying = true;
+            updateIcon(true);
+        });
+
+        startVideo();
+    </script>
+</body>
+</html>
