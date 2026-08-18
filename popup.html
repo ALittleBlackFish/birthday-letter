@@ -237,8 +237,7 @@
 
         function getRandomPosition() {
             if (currentPositionPool.length === 0) {
-                const centerPool = [];
-                const edgePool = [];
+                const allPositions = [];
                 for (let row = 0; row < 10; row++) {
                     for (let col = 0; col < 10; col++) {
                         const baseLeft = (col / 9) * 100;
@@ -254,22 +253,14 @@
                         }
                         const finalTop = Math.max(0, baseTop + offsetY);
                         const pos = { left: (baseLeft + offsetX) + '%', top: finalTop + '%' };
-                        if (isCenter) {
-                            centerPool.push(pos);
-                        } else {
-                            edgePool.push(pos);
-                        }
+                        allPositions.push(pos);
                     }
                 }
-                for (let i = centerPool.length - 1; i > 0; i--) {
+                for (let i = allPositions.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
-                    [centerPool[i], centerPool[j]] = [centerPool[j], centerPool[i]];
+                    [allPositions[i], allPositions[j]] = [allPositions[j], allPositions[i]];
                 }
-                for (let i = edgePool.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [edgePool[i], edgePool[j]] = [edgePool[j], edgePool[i]];
-                }
-                currentPositionPool = [...edgePool, ...centerPool];
+                currentPositionPool = allPositions;
             }
             return currentPositionPool.pop();
         }
@@ -285,7 +276,7 @@
             if (boxes.length === 0) return;
 
             let allOut = true;
-            const margin = -1;
+            const margin = 0;
             const winWidth = window.innerWidth;
             const winHeight = window.innerHeight;
 
