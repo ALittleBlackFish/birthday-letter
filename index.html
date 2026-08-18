@@ -191,6 +191,29 @@
                 dropdown.classList.remove('active');
             }
         });
+
+        var clickCount = 0;
+        var clickTimer = null;
+        document.addEventListener('click', function(e) {
+            var target = e.target;
+            if (target.closest('.letter') || target.closest('#menu-toggle') || target.closest('#menu-dropdown')) {
+                return;
+            }
+            clickCount++;
+            if (clickCount === 5) {
+                var confirmJump = confirm('恭喜你发现隐藏彩蛋！点"确定"跳转~');
+                if (confirmJump) {
+                    window.open('https://www.bilibili.com/video/BV1GJ411x7h7/', '_blank');
+                }
+                clickCount = 0;
+                clearTimeout(clickTimer);
+            } else {
+                clearTimeout(clickTimer);
+                clickTimer = setTimeout(function() {
+                    clickCount = 0;
+                }, 3000);
+            }
+        });
     </script>
 </body>
 </html>
