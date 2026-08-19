@@ -179,39 +179,16 @@
                 height: 18px;
             }
         }
-
-        #video-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 100000;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
     </style>
 </head>
 <body>
-
-    <div id="video-container">
-        <video id="intro-video" src="assets/video/dance.mp4" preload="auto" playsinline disablePictureInPicture></video>
-    </div>
 
     <button id="menu-toggle" aria-label="菜单">
         <span></span><span></span><span></span>
     </button>
     <nav id="menu-dropdown">
         <ul>
-            <li><a href="letter.html">生日信</a></li>
+            <li><a href="intro.html">生日信</a></li>
             <li><a href="popup.html">弹窗生成器</a></li>
         </ul>
     </nav>
@@ -295,7 +272,7 @@
         var clickTimer = null;
         document.addEventListener('click', function (e) {
             var target = e.target;
-            if (target.closest('.letter') || target.closest('#menu-toggle') || target.closest('#menu-dropdown') || target.closest('#sound-toggle') || target.closest('#video-container')) {
+            if (target.closest('.letter') || target.closest('#menu-toggle') || target.closest('#menu-dropdown') || target.closest('#sound-toggle')) {
                 return;
             }
             clickCount++;
@@ -317,7 +294,6 @@
         var soundToggle = document.getElementById('sound-toggle');
         var soundIcon = document.getElementById('sound-icon');
         var isPlaying = false;
-        var videoPlaying = false;
 
         function updateIcon(playing) {
             if (playing) {
@@ -336,11 +312,6 @@
         });
 
         soundToggle.addEventListener('click', function () {
-            if (videoPlaying) {
-                isPlaying = !isPlaying;
-                updateIcon(isPlaying);
-                return;
-            }
             if (isPlaying) {
                 audio.pause();
                 isPlaying = false;
@@ -352,42 +323,6 @@
                 }).catch(function () {});
             }
         });
-
-        var videoContainer = document.getElementById('video-container');
-        var video = document.getElementById('intro-video');
-
-        function startVideo() {
-            video.play().then(function () {
-                if (isPlaying) {
-                    audio.pause();
-                    isPlaying = false;
-                    updateIcon(false);
-                }
-                videoPlaying = true;
-            }).catch(function () {
-                videoContainer.addEventListener('click', function playOnce() {
-                    video.play().then(function () {
-                        if (isPlaying) {
-                            audio.pause();
-                            isPlaying = false;
-                            updateIcon(false);
-                        }
-                        videoPlaying = true;
-                        videoContainer.removeEventListener('click', playOnce);
-                    }).catch(function () {});
-                });
-            });
-        }
-
-        video.addEventListener('ended', function () {
-            videoPlaying = false;
-            videoContainer.remove();
-            audio.play().catch(function () {});
-            isPlaying = true;
-            updateIcon(true);
-        });
-
-        startVideo();
     </script>
 </body>
 </html>
